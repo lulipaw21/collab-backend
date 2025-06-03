@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Cadastro - COLLAB</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #faf6f6;
+    }
+
+    .top-banner {
+      background: linear-gradient(to right, #660000, #001f3f);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 250px;
+    }
+
+    .top-banner img {
+      height: 300px;
+    }
+
+    .login-container {
+      max-width: 350px;
+      background: #fff;
+      margin: 60px auto 0;
+      padding: 40px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-radius: 8px;
+    }
+
+    .login-container h2 {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 12px;
+      background-color: #660000;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 4px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    .login-btn:hover {
+      background-color: #8a0000;
+    }
+
+    .signup {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .signup a {
+      color: #053769;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .footer {
+      margin-top: 40px;
+      text-align: center;
+      color: #888;
+    }
+
+    .footer i {
+      font-size: 24px;
+      margin: 0 10px;
+      cursor: pointer;
+    }
+
+    .senha-container {
+      position: relative;
+    }
+
+    #toggleSenha {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #888;
+    }
+  </style>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+  <div class="top-banner">
+    <h1 style="color:white;">COLLAB</h1>
+  </div>
+
+  <div class="login-container">
+    <h2>Cadastre-se</h2>
+    <input class="input-field" type="text" id="nome" placeholder="Nome completo">
+    <input class="input-field" type="text" id="nome_usuario" placeholder="Nome de usuário">
+    <input class="input-field" type="email" id="email" placeholder="E-mail">
+
+    <div class="senha-container">
+      <input class="input-field" type="password" id="senha" placeholder="Senha" style="padding-right: 40px;">
+      <i class="fa fa-eye" id="toggleSenha"></i>
+    </div>
+
+    <button class="login-btn" id="bntCadastrar">Cadastrar</button>
+
+    <div class="signup">
+      Já tem conta? <a href="prototipo-login.html">Entrar</a>
+    </div>
+  </div>
+
+  <div class="footer">
+    <i class="fab fa-facebook"></i>
+    <i class="fab fa-instagram"></i>
+    <i class="fab fa-x-twitter"></i>
+  </div>
+
+  <script>
+    const senhaInput = document.getElementById("senha");
+    const toggleSenha = document.getElementById("toggleSenha");
+
+    toggleSenha.addEventListener("click", () => {
+      const tipo = senhaInput.getAttribute("type");
+      senhaInput.setAttribute("type", tipo === "password" ? "text" : "password");
+      toggleSenha.classList.toggle("fa-eye");
+      toggleSenha.classList.toggle("fa-eye-slash");
+    });
+
+    document.getElementById("bntCadastrar").addEventListener("click", async () => {
+      const nome = document.getElementById("nome").value.trim();
+      const nome_usuario = document.getElementById("nome_usuario").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const senha = senhaInput.value.trim();
+
+      if (!nome || !nome_usuario || !email || !senha) {
+        alert("Por favor, preencha todos os campos.");
+        return;
+      }
+
+      if (!email.includes("@") || !email.includes(".")) {
+        alert("Digite um e-mail válido.");
+        return;
+      }
+
+      try {
+        const resposta = await fetch("/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            nome,
+            username: nome_usuario,
+            email,
+            password: senha
+          })
+        });
+
+        const texto = await resposta.text();
+        alert(texto);
+
+        if (resposta.ok) {
+          document.getElementById("nome").value = "";
+          document.getElementById("nome_usuario").value = "";
+          document.getElementById("email").value = "";
+          senhaInput.value = "";
+        }
+
+      } catch (error) {
+        alert("Erro ao enviar dados: " + error.message);
+      }
+    });
+  </script>
+
+</body>
+</html>
+
+
